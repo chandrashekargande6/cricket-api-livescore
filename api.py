@@ -1,9 +1,10 @@
+import os
 from flask import Flask, jsonify, request
-from flask_cors import CORS  # <-- Add this
+from flask_cors import CORS
 from scraper import get_all_live_matches, get_match_scorecard
 
 app = Flask(__name__)
-CORS(app)  # <-- Enable CORS for all routes
+CORS(app)
 
 @app.route('/api/livematches', methods=['GET'])
 def live_matches():
@@ -19,4 +20,5 @@ def match_details():
     return jsonify(get_match_scorecard(match_url))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=False, host='0.0.0.0', port=port)
