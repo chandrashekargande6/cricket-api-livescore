@@ -39,7 +39,7 @@
   <div id="matches">Loading matches...</div>
 
   <script>
-    fetch("http://localhost:5000/api/livematches")
+    fetch("https://cricket-api-livescore-1.onrender.com/api/livematches")
       .then(response => response.json())
       .then(data => {
         const container = document.getElementById("matches");
