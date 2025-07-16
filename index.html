@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Live Cricket Scores</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      padding: 20px;
+    }
+    h1 {
+      color: #1a73e8;
+    }
+    .match {
+      background: white;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .status {
+      font-weight: bold;
+      color: #0b8043;
+    }
+    .score {
+      margin: 5px 0;
+    }
+    .players {
+      margin-top: 10px;
+    }
+    .players ul {
+      padding-left: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🏏 Live Cricket Scores</h1>
+  <div id="matches">Loading matches...</div>
+
+  <script>
+    fetch("http://localhost:5000/api/livematches")
+      .then(response => response.json())
+      .then(data => {
+        const container = document.getElementById("matches");
+        container.innerHTML = "";
+
+        if (data.length === 0) {
+          container.innerHTML = "<p>No live matches found.</p>";
+          return;
+        }
+
+        data.forEach(match => {
+          const matchDiv = document.createElement("div");
+          matchDiv.className = "match";
+
+          let scores = match.team_scores.map(score => `<div class="score">📊 ${score}</div>`).join("");
+          let players = match.players.map(player => `<li>${player.name}: ${player.runs} (${player.balls})</li>`).join("");
+
+          matchDiv.innerHTML = `
+            <h2>${match.title}</h2>
+            <div class="status">📌 ${match.status}</div>
+            ${scores}
+            <div class="players">
+              <strong>👤 Players:</strong>
+              <ul>${players}</ul>
+            </div>
+            <a href="${match.link}" target="_blank">🌐 View on Cricbuzz</a>
+          `;
+
+          container.appendChild(matchDiv);
+        });
+      })
+      .catch(error => {
+        document.getElementById("matches").innerHTML = "<p>Error loading data.</p>";
+        console.error("API fetch error:", error);
+      });
+  </script>
+</body>
+</html>
